@@ -40,7 +40,7 @@ public class Grupo {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "ID_MAESTRO", nullable = false)
-    private Mestro maestro;
+    private Maestro maestro;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "ID_AULA", nullable = false)
