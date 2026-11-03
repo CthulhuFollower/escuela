@@ -1,5 +1,7 @@
 package com.julian.escuela.entities;
 
+import com.julian.escuela.exceptions.DatoInvalidoException;
+import com.julian.escuela.utils.ValoresNumericosUtils;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -38,4 +40,24 @@ public class Calificacion {
 
     @Column(name = "FECHA_REGISTRO", columnDefinition = "DATE")
     private LocalDateTime fechaRegistro;
+
+    private static void validarDatos(Inscripcion inscripcion, BigDecimal calificacion) {
+        if (inscripcion == null) {
+            throw new DatoInvalidoException("La inscripcion es requerida");
+        }
+        ValoresNumericosUtils.validarNumeroRequerido(calificacion, "La calificacion es requerida");
+        if (calificacion.compareTo(BigDecimal.ZERO) < 0 || calificacion.compareTo(BigDecimal.TEN) > 0) {
+            throw new DatoInvalidoException("La calificacion debe estar entre 0 y 10");
+        }
+    }
+
+    public static Calificacion crear(Inscripcion inscripcion, BigDecimal calificacion) {
+        validarDatos(inscripcion, calificacion);
+
+        Calificacion registro = new Calificacion();
+        registro.inscripcion = inscripcion;
+        registro.calificacion = calificacion;
+        registro.fechaRegistro = LocalDateTime.now();
+        return registro;
+    }
 }

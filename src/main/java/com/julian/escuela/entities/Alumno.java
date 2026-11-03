@@ -1,11 +1,13 @@
 package com.julian.escuela.entities;
 
+import com.julian.escuela.utils.StringCustomUtils;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Entity
 @Table(name = "ALUMNOS")
@@ -46,4 +48,32 @@ public class Alumno {
     @Builder.Default
     @OneToMany(mappedBy = "alumno", fetch = FetchType.LAZY)
     private List<Inscripcion> inscripciones = new ArrayList<>();
+
+    private static void validarDatos(String nombre, String apellidoPaterno, String apellidoMaterno,
+                                     String email, String matricula) {
+        StringCustomUtils.validarTamanio(nombre, 1, 50,
+                "El nombre es requerido y debe tener como maximo 50 caracteres");
+        StringCustomUtils.validarTamanio(apellidoPaterno, 1, 50,
+                "El apellido paterno es requerido y debe tener como maximo 50 caracteres");
+        StringCustomUtils.validarTamanio(apellidoMaterno, 1, 50,
+                "El apellido materno es requerido y debe tener como maximo 50 caracteres");
+        StringCustomUtils.validarTamanio(email, 1, 100,
+                "El email es requerido y debe tener como maximo 100 caracteres");
+        StringCustomUtils.validarTamanio(matricula, 1, 10,
+                "La matricula es requerida y debe tener como maximo 10 caracteres");
+    }
+
+    public static Alumno crear(String nombre, String apellidoPaterno, String apellidoMaterno,
+                               String email, String matricula) {
+        validarDatos(nombre, apellidoPaterno, apellidoMaterno, email, matricula);
+
+        return Alumno.builder()
+                .nombre(nombre.trim())
+                .apellidoPaterno(apellidoPaterno.trim())
+                .apellidoMaterno(apellidoMaterno.trim())
+                .email(email.trim().toLowerCase(Locale.ROOT))
+                .matricula(matricula.trim())
+                .fechaIngreso(LocalDateTime.now())
+                .build();
+    }
 }

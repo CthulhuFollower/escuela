@@ -40,6 +40,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
     }
 
+    // 409: regla de negocio violada (duplicado, etc.)
+    @ExceptionHandler(EntidadRelacionadaException.class)
+    public ProblemDetail EntidadRelacionadaException(EntidadRelacionadaException e) {
+        log.warn("Conflicto: {}", e.getMessage());
+        return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
+    }
+
     // 409: la base de datos rechazó el dato (unique, foreign key...)
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ProblemDetail handleIntegridad(DataIntegrityViolationException e) {
