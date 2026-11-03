@@ -39,6 +39,13 @@ public class Maestro {
     @OneToMany(mappedBy = "maestro", fetch = FetchType.LAZY)
     private List<Grupo> grupos = new ArrayList<>();
 
+    public String obtenerNombreCompleto(){
+        return String.join(
+                this.getNombre(),
+                this.getApellidoMaterno(),
+                this.getApellidoPaterno());
+    }
+
     private static void validarDatos(String nombre, String apellidoPaterno,String apellidoMaterno, String email, String telefono){
 
         StringCustomUtils.validarTamanio(nombre, 1, 50, "El nombre es requerdio y debe tener entre 1 y 50 caracteres");

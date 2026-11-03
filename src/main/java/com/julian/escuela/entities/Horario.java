@@ -1,6 +1,7 @@
 package com.julian.escuela.entities;
 
 import com.julian.escuela.enums.DiaSemana;
+import com.julian.escuela.exceptions.DatoInvalidoException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -42,4 +43,32 @@ public class Horario {
 
     @Column(name = "HORA_FIN", nullable = false, length = 5)
     private String horaFin;
+
+    private static void validarDatos(Grupo grupo, DiaSemana dia, String horaInicio, String horaFin) {
+        if (grupo == null) {
+            throw new DatoInvalidoException("El grupo es requerido");
+        }
+        if (dia == null) {
+            throw new DatoInvalidoException("El dia es requerido");
+        }
+        validarHora(horaInicio, "La hora de inicio debe tener el formato HH:mm y estar entre 00:00 y 23:59");
+        validarHora(horaFin, "La hora de fin debe tener el formato HH:mm y estar entre 00:00 y 23:59");
+    }
+
+    public static Horario crear(Grupo grupo, DiaSemana dia, String horaInicio, String horaFin) {
+        validarDatos(grupo, dia, horaInicio, horaFin);
+
+        Horario horario = new Horario();
+        horario.grupo = grupo;
+        horario.dia = dia;
+        horario.horaInicio = horaInicio;
+        horario.horaFin = horaFin;
+        return horario;
+    }
+
+    private static void validarHora(String hora, String mensaje) {
+        if (hora == null || !hora.matches("([01][0-9]|2[0-3]):[0-5][0-9]")) {
+            throw new DatoInvalidoException(mensaje);
+        }
+    }
 }

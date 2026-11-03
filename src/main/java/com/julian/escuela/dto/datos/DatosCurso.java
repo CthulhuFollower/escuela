@@ -11,6 +11,6 @@ public record DatosCurso(
         String descripcion,
 
         @Schema(description = "Creditos del curso", example = "5")
-        String creditos){
+        Integer creditos){
 
 }

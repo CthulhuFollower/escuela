@@ -1,5 +1,6 @@
 package com.julian.escuela.entities;
 
+import com.julian.escuela.exceptions.DatoInvalidoException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -46,4 +47,23 @@ public class Inscripcion {
 
     @OneToOne(mappedBy = "inscripcion", fetch = FetchType.LAZY)
     private Calificacion calificacion;
+
+    private static void validarDatos(Alumno alumno, Grupo grupo) {
+        if (alumno == null) {
+            throw new DatoInvalidoException("El alumno es requerido");
+        }
+        if (grupo == null) {
+            throw new DatoInvalidoException("El grupo es requerido");
+        }
+    }
+
+    public static Inscripcion crear(Alumno alumno, Grupo grupo) {
+        validarDatos(alumno, grupo);
+
+        Inscripcion inscripcion = new Inscripcion();
+        inscripcion.alumno = alumno;
+        inscripcion.grupo = grupo;
+        inscripcion.fechaInscripcion = LocalDateTime.now();
+        return inscripcion;
+    }
 }

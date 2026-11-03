@@ -1,5 +1,7 @@
 package com.julian.escuela.entities;
 
+import com.julian.escuela.exceptions.DatoInvalidoException;
+import com.julian.escuela.utils.StringCustomUtils;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -54,4 +56,29 @@ public class Grupo {
 
     @OneToMany(mappedBy = "grupo", fetch = FetchType.LAZY)
     private List<Horario> horarios = new ArrayList<>();
+
+    private static void validarDatos(Curso curso, Maestro maestro, Aula aula, String periodo) {
+        if (curso == null) {
+            throw new DatoInvalidoException("El curso es requerido");
+        }
+        if (maestro == null) {
+            throw new DatoInvalidoException("El maestro es requerido");
+        }
+        if (aula == null) {
+            throw new DatoInvalidoException("El aula es requerida");
+        }
+        StringCustomUtils.validarTamanio(periodo, 1, 20,
+                "El periodo es requerido y debe tener como maximo 20 caracteres");
+    }
+
+    public static Grupo crear(Curso curso, Maestro maestro, Aula aula, String periodo) {
+        validarDatos(curso, maestro, aula, periodo);
+
+        Grupo grupo = new Grupo();
+        grupo.curso = curso;
+        grupo.maestro = maestro;
+        grupo.aula = aula;
+        grupo.periodo = periodo.trim();
+        return grupo;
+    }
 }
