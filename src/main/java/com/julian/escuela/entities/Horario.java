@@ -55,6 +55,15 @@ public class Horario {
         validarHora(horaFin, "La hora de fin debe tener el formato HH:mm y estar entre 00:00 y 23:59");
     }
 
+    public void actualizar(Grupo grupo, DiaSemana dia, String horaInicio, String horaFin) {
+        validarDatos(grupo, dia, horaInicio, horaFin);
+
+        this.grupo = grupo;
+        this.dia = dia;
+        this.horaInicio = horaInicio;
+        this.horaFin = horaFin;
+    }
+
     public static Horario crear(Grupo grupo, DiaSemana dia, String horaInicio, String horaFin) {
         validarDatos(grupo, dia, horaInicio, horaFin);
 

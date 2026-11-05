@@ -71,6 +71,15 @@ public class Grupo {
                 "El periodo es requerido y debe tener como maximo 20 caracteres");
     }
 
+    public void actualizar(Curso curso, Maestro maestro, Aula aula, String periodo) {
+        validarDatos(curso, maestro, aula, periodo);
+
+        this.curso = curso;
+        this.maestro = maestro;
+        this.aula = aula;
+        this.periodo = periodo.trim();
+    }
+
     public static Grupo crear(Curso curso, Maestro maestro, Aula aula, String periodo) {
         validarDatos(curso, maestro, aula, periodo);
 

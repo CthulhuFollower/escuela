@@ -56,6 +56,14 @@ public class Curso {
         }
     }
 
+    public void actualizar(String nombre, String descripcion, Integer creditos) {
+        validarDatos(nombre, descripcion, creditos);
+
+        this.nombre = nombre.trim();
+        this.descripcion = descripcion == null ? null : descripcion.trim();
+        this.creditos = creditos;
+    }
+
     public static Curso crear(String nombre, String descripcion, Integer creditos) {
         validarDatos(nombre, descripcion, creditos);
 

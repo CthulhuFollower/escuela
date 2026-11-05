@@ -14,19 +14,15 @@ class AlumnoTest {
         String nombre = " Juan ";
         String apellidoPaterno = " Perez ";
         String apellidoMaterno = " Lopez ";
-        String email = " JUAN@ALUMNOS.COM ";
-        String matricula = " A2026001 ";
 
         // Act
-        Alumno alumno = Alumno.crear(nombre, apellidoPaterno, apellidoMaterno, email, matricula);
+        Alumno alumno = Alumno.crear(nombre, apellidoPaterno, apellidoMaterno;
 
         // Assert
-        assertThat(alumno.getIdAlumno()).isNull();
+        assertThat(alumno.getId()).isNull();
         assertThat(alumno.getNombre()).isEqualTo("Juan");
         assertThat(alumno.getApellidoPaterno()).isEqualTo("Perez");
         assertThat(alumno.getApellidoMaterno()).isEqualTo("Lopez");
-        assertThat(alumno.getEmail()).isEqualTo("juan@alumnos.com");
-        assertThat(alumno.getMatricula()).isEqualTo("A2026001");
         assertThat(alumno.getFechaIngreso()).isNotNull();
         assertThat(alumno.getInscripciones()).isEmpty();
     }

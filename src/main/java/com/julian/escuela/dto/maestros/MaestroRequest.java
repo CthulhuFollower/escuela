@@ -1,6 +1,7 @@
 package com.julian.escuela.dto.maestros;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -21,6 +22,7 @@ public record MaestroRequest(
         @Size(min = 1, max = 50, message = "El apellido materno debe tener entre 1 y 50 caracteres")
         String apellidoMaterno,
 
+        @Email(message = "El email debe tener un formato válido")
         @Schema(description = "Email del maestro", example = "maximo@gmail.com")
         @NotBlank(message = "El email es requerido")
         @Size(min = 1, max = 50, message = "El email debe tener entre 8 y 100 caracteres")

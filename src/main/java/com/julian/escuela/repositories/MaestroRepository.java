@@ -5,12 +5,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MaestroRepository extends JpaRepository<Maestro, Long> {
 
-    boolean existByEmailIgnoreCase(String email);
+    boolean existsByEmailIgnoreCase(String email);
 
-    boolean existByTelefono(String telefono);
+    boolean existsByTelefono(String telefono);
 
-    boolean existsByEmailIgnoreCaseAndIdNot(String email, Long id);
+    boolean existsByEmailIgnoreCaseAndIdMaestroNot(String email, Long id);
 
-    boolean existsByTelefonoAndIdNot(String telefono, Long id);
+    boolean existsByTelefonoAndIdMaestroNot(String telefono, Long id);
 
 }

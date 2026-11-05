@@ -51,6 +51,13 @@ public class Calificacion {
         }
     }
 
+    public void actualizar(Inscripcion inscripcion, BigDecimal calificacion) {
+        validarDatos(inscripcion, calificacion);
+
+        this.inscripcion = inscripcion;
+        this.calificacion = calificacion;
+    }
+
     public static Calificacion crear(Inscripcion inscripcion, BigDecimal calificacion) {
         validarDatos(inscripcion, calificacion);
 
@@ -60,4 +67,5 @@ public class Calificacion {
         registro.fechaRegistro = LocalDateTime.now();
         return registro;
     }
+
 }

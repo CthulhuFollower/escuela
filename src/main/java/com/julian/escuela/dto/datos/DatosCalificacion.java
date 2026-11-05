@@ -11,7 +11,7 @@ public record DatosCalificacion (
         String curso,
 
         @Schema(description = "Periodo de la calificacion", example = "2026-09")
-        String perido,
+        String periodo,
 
         @Schema(description = "Valor de la calificacion", example = "9.9")
         BigDecimal calificacion
