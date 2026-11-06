@@ -47,8 +47,8 @@ public class InscripcionServiceImpl implements InscripcionService {
     public InscripcionResponse registrar(InscripcionRequest request) {
         log.info("Registrando nueva inscripcion...");
 
-        Alumno alumno = ServiceUtils.obtenerEntidadOException(alumnoRepository, request.idAlumno(), Alumno.class);
-        Grupo grupo = ServiceUtils.obtenerEntidadOException(grupoRepository, request.idGrupo(), Grupo.class);
+        Alumno alumno = obtenerAlumno(request.idAlumno());
+        Grupo grupo = obtenerGrupo(request.idGrupo());
         validarDatosUnicos(request);
 
         Inscripcion inscripcion = inscripcionMapper.requestAEntidad(request, alumno, grupo);
@@ -63,8 +63,8 @@ public class InscripcionServiceImpl implements InscripcionService {
         log.info("Actualizando inscripcion con id: {}", id);
 
         Inscripcion inscripcion = obtenerInscripcion(id);
-        Alumno alumno = ServiceUtils.obtenerEntidadOException(alumnoRepository, request.idAlumno(), Alumno.class);
-        Grupo grupo = ServiceUtils.obtenerEntidadOException(grupoRepository, request.idGrupo(), Grupo.class);
+        Alumno alumno = obtenerAlumno(request.idAlumno());
+        Grupo grupo = obtenerGrupo(request.idGrupo());
         validarCambiosUnicos(request, id);
 
         inscripcion.actualizar(alumno, grupo);
@@ -90,6 +90,14 @@ public class InscripcionServiceImpl implements InscripcionService {
 
     private Inscripcion obtenerInscripcion(Long id) {
         return ServiceUtils.obtenerEntidadOException(inscripcionRepository, id, Inscripcion.class);
+    }
+
+    private Alumno obtenerAlumno(Long id) {
+        return ServiceUtils.obtenerEntidadOException(alumnoRepository, id, Alumno.class);
+    }
+
+    private Grupo obtenerGrupo(Long id) {
+        return ServiceUtils.obtenerEntidadOException(grupoRepository, id, Grupo.class);
     }
 
     public void validarDatosUnicos(InscripcionRequest request) {

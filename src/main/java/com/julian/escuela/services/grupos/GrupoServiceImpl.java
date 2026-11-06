@@ -93,9 +93,14 @@ public class GrupoServiceImpl implements GrupoService {
     public void eliminar(Long id){
         Grupo grupo = obtenerGrupo(id);
 
-        if (inscripcionRepository.existsByGrupoId(id) || horarioRepository.existsByGrupoId(id))
+        if (inscripcionRepository.existsByGrupoId(id))
             throw new EntidadRelacionadaException(
-                    "No se puede eliminar el grupo ya que tiene inscripciones u horarios asociados"
+                    "No se puede eliminar el grupo porque tiene inscripciones asociadas"
+            );
+
+        if (horarioRepository.existsByGrupoId(id))
+            throw new EntidadRelacionadaException(
+                    "No se puede eliminar el grupo ya que tiene horarios asociados"
             );
 
         log.info("Eliminando grupo con id: {}", id);
