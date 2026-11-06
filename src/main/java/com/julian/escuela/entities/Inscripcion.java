@@ -57,6 +57,13 @@ public class Inscripcion {
         }
     }
 
+    public void actualizar(Alumno alumno, Grupo grupo) {
+        validarDatos(alumno, grupo);
+
+        this.alumno = alumno;
+        this.grupo = grupo;
+    }
+
     public static Inscripcion crear(Alumno alumno, Grupo grupo) {
         validarDatos(alumno, grupo);
 

@@ -28,7 +28,7 @@ public class Horario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_HORARIO")
-    private Long idHorario;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "ID_GRUPO", nullable = false)
@@ -53,6 +53,18 @@ public class Horario {
         }
         validarHora(horaInicio, "La hora de inicio debe tener el formato HH:mm y estar entre 00:00 y 23:59");
         validarHora(horaFin, "La hora de fin debe tener el formato HH:mm y estar entre 00:00 y 23:59");
+        if (horaFin.compareTo(horaInicio) <= 0) {
+            throw new DatoInvalidoException("La hora de fin debe ser posterior a la hora de inicio");
+        }
+    }
+
+    public void actualizar(Grupo grupo, DiaSemana dia, String horaInicio, String horaFin) {
+        validarDatos(grupo, dia, horaInicio, horaFin);
+
+        this.grupo = grupo;
+        this.dia = dia;
+        this.horaInicio = horaInicio;
+        this.horaFin = horaFin;
     }
 
     public static Horario crear(Grupo grupo, DiaSemana dia, String horaInicio, String horaFin) {

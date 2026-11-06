@@ -5,7 +5,6 @@ import com.julian.escuela.dto.maestros.MaestroResponse;
 import com.julian.escuela.entities.Maestro;
 import com.julian.escuela.exceptions.ConflictoException;
 import com.julian.escuela.exceptions.EntidadRelacionadaException;
-import com.julian.escuela.exceptions.RecursoNoEncontradoException;
 import com.julian.escuela.mappers.MaestroMapper;
 import com.julian.escuela.repositories.GrupoRespository;
 import com.julian.escuela.repositories.MaestroRepository;
@@ -61,11 +60,11 @@ public class MaestroServiceImpl implements MaestroService{
     @Transactional
     public MaestroResponse actualizar(MaestroRequest request, Long id) {
 
-        validarCambiosUnicos(request, id);
-
         log.info("Actualizando maestro con id: {}", id);
 
         Maestro maestro = obtenerMaestro(id);
+
+        validarCambiosUnicos(request, id);
 
         maestro.actualizar(
                 request.nombre(),
@@ -87,7 +86,7 @@ public class MaestroServiceImpl implements MaestroService{
     public void eliminar(Long id) {
         Maestro maestro = obtenerMaestro(id);
 
-        if (grupoRepository.existByMaestroId(id))
+        if (grupoRepository.existsByMaestro_IdMaestro(id))
             throw new EntidadRelacionadaException(
                     "No se puede eliminar el maestro ya que tiene grupos asignados"
             );
@@ -106,21 +105,21 @@ public class MaestroServiceImpl implements MaestroService{
 
     public void validarDatosUnicos(MaestroRequest request){
         log.info("Validando correo unico...");
-        if (maestroRepository.existByEmailIgnoreCase(request.email().trim()))
+        if (maestroRepository.existsByEmailIgnoreCase(request.email().trim()))
             throw new ConflictoException("Ya existe un maestro registrado con el email: " + request.email());
 
         log.info("Validando numero unico...");
-        if (maestroRepository.existByTelefono(request.telefono().trim()))
+        if (maestroRepository.existsByTelefono(request.telefono().trim()))
             throw new ConflictoException("Ya existe un maestro registrado con el telefono: " + request.telefono());
     }
 
     public void validarCambiosUnicos(MaestroRequest request, Long id){
         log.info("Validando cambio en correo unico...");
-        if (maestroRepository.existsByEmailIgnoreCaseAndIdNot(request.email().trim(), id))
+        if (maestroRepository.existsByEmailIgnoreCaseAndIdMaestroNot(request.email().trim(), id))
             throw new ConflictoException("Ya existe un maestro registrado con el email: " + request.email());
 
         log.info("Validando cambio en numero unico...");
-        if (maestroRepository.existsByTelefonoAndIdNot(request.telefono().trim(), id))
+        if (maestroRepository.existsByTelefonoAndIdMaestroNot(request.telefono().trim(), id))
             throw new ConflictoException("Ya existe un maestro registrado con el telefono: " + request.telefono());
     }
 }

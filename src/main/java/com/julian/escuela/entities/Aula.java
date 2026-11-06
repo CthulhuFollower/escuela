@@ -29,7 +29,7 @@ public class Aula {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_AULA")
-    private Long idAula;
+    private Long id;
 
     @Column(name = "NOMBRE", nullable = false, unique = true, length = 30)
     private String nombre;
@@ -38,6 +38,7 @@ public class Aula {
     private Integer capacidad;
 
     @OneToMany(mappedBy = "aula", fetch = FetchType.LAZY)
+
     private List<Grupo> grupos = new ArrayList<>();
 
     private static void validarDatos(String nombre, Integer capacidad) {
@@ -48,6 +49,13 @@ public class Aula {
         if (capacidad > 9999) {
             throw new DatoInvalidoException("La capacidad no puede exceder 9999");
         }
+    }
+
+    public void actualizar(String nombre, Integer capacidad) {
+        validarDatos(nombre, capacidad);
+
+        this.nombre = nombre.trim();
+        this.capacidad = capacidad;
     }
 
     public static Aula crear(String nombre, Integer capacidad) {

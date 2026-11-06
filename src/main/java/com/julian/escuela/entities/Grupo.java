@@ -13,10 +13,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +31,7 @@ public class Grupo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_GRUPO")
-    private Long idGrupo;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "ID_CURSO", nullable = false)
@@ -71,7 +68,17 @@ public class Grupo {
                 "El periodo es requerido y debe tener como maximo 20 caracteres");
     }
 
+    public void actualizar(Curso curso, Maestro maestro, Aula aula, String periodo) {
+        validarDatos(curso, maestro, aula, periodo);
+
+        this.curso = curso;
+        this.maestro = maestro;
+        this.aula = aula;
+        this.periodo = periodo.trim();
+    }
+
     public static Grupo crear(Curso curso, Maestro maestro, Aula aula, String periodo) {
+
         validarDatos(curso, maestro, aula, periodo);
 
         Grupo grupo = new Grupo();

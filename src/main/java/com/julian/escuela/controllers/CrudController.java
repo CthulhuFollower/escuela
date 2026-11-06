@@ -20,7 +20,6 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Validated
-@Tag(name = "Registros", description = "Gestión de registros")
 // Errores que pueden ocurrir en cualquier endpoint:
 @ApiResponse(responseCode = "400", description = "Datos o parámetros inválidos",
         content = @Content(mediaType = "application/problem+json",

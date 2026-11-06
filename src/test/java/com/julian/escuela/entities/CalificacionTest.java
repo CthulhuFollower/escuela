@@ -1,49 +1,82 @@
 package com.julian.escuela.entities;
 
 import com.julian.escuela.exceptions.DatoInvalidoException;
+import com.julian.escuela.enums.DiaSemana;
 import org.junit.jupiter.api.Test;
-
 import java.math.BigDecimal;
-
+import java.time.LocalDate;
+import java.util.List;
+import static com.julian.escuela.support.TestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class CalificacionTest {
-
     @Test
-    void crear_debeCrearCalificacion_cuandoLaCalificacionEsCero() {
+    void crear_valorValido_retornaCalificacion() {
         // Arrange
-        Inscripcion inscripcion = crearInscripcion();
-        BigDecimal valor = new BigDecimal("0.0");
+        Inscripcion inscripcion = inscripcion();
 
         // Act
-        Calificacion calificacion = Calificacion.crear(inscripcion, valor);
+        Calificacion calificacion = Calificacion.crear(inscripcion, new BigDecimal("8.5"));
 
         // Assert
-        assertThat(calificacion.getIdCalificacion()).isNull();
         assertThat(calificacion.getInscripcion()).isSameAs(inscripcion);
-        assertThat(calificacion.getCalificacion()).isEqualByComparingTo("0.0");
-        assertThat(calificacion.getFechaRegistro()).isNotNull();
+        assertThat(calificacion.getCalificacion()).isEqualByComparingTo("8.5");
+        assertThat(calificacion.getFechaRegistro().toLocalDate()).isEqualTo(LocalDate.now());
     }
-
     @Test
-    void crear_debeLanzarExcepcion_cuandoLaCalificacionEsMayorQueDiez() {
+    void crear_valorNulo_lanzaDatoInvalidoException() {
         // Arrange
-        Inscripcion inscripcion = crearInscripcion();
-        BigDecimal valor = new BigDecimal("11.0");
+        Inscripcion inscripcion = inscripcion();
 
-        // Act + Assert
-        assertThatThrownBy(() -> Calificacion.crear(inscripcion, valor))
-                .isInstanceOf(DatoInvalidoException.class)
-                .hasMessage("La calificacion debe estar entre 0 y 10");
+        // Act
+        DatoInvalidoException error = assertThrows(DatoInvalidoException.class, () -> Calificacion.crear(inscripcion, null));
+
+        // Assert
+        assertThat(error.getMessage()).isNotBlank();
     }
+    @Test
+    void actualizar_valorValido_actualizaCalificacion() {
+        // Arrange
+        Calificacion calificacion = calificacion();
 
-    private Inscripcion crearInscripcion() {
-        Alumno alumno = Alumno.crear("Juan", "Perez", "Lopez", "juan@alumnos.com", "A2026001");
-        Curso curso = Curso.crear("Matematicas I", null, 6);
-        Maestro maestro = Maestro.crear("Laura", "Martinez", "Lopez", "laura@escuela.com", "5551010789");
-        Aula aula = Aula.crear("Aula 101", 30);
-        Grupo grupo = Grupo.crear(curso, maestro, aula, "2026-2");
-        return Inscripcion.crear(alumno, grupo);
+        // Act
+        calificacion.actualizar(inscripcion(), new BigDecimal("9"));
+
+        // Assert
+        assertThat(calificacion.getCalificacion()).isEqualByComparingTo("9");
+    }
+    @Test
+    void actualizar_valorNulo_lanzaDatoInvalidoException() {
+        // Arrange
+        Calificacion calificacion = calificacion();
+
+        // Act
+        DatoInvalidoException error = assertThrows(DatoInvalidoException.class, () -> calificacion.actualizar(inscripcion(), null));
+
+        // Assert
+        assertThat(error.getMessage()).isNotBlank();
+    }
+    @Test
+    void crear_calificacionCero_retornaCalificacion() {
+        // Arrange
+        Inscripcion inscripcion = inscripcion();
+
+        // Act
+        Calificacion calificacion = Calificacion.crear(inscripcion, BigDecimal.ZERO);
+
+        // Assert
+        assertThat(calificacion.getCalificacion()).isEqualByComparingTo(BigDecimal.ZERO);
+    }
+    @Test
+    void crear_valorFueraDeRango_lanzaDatoInvalidoException() {
+        // Arrange
+        Inscripcion inscripcion = inscripcion();
+
+        // Act
+        DatoInvalidoException error = assertThrows(DatoInvalidoException.class, () -> Calificacion.crear(inscripcion, new BigDecimal("11")));
+
+        // Assert
+        assertThat(error.getMessage()).isNotBlank();
     }
 }

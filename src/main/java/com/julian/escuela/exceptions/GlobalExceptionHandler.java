@@ -1,5 +1,6 @@
 package com.julian.escuela.exceptions;
 
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -85,6 +86,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.BAD_REQUEST, "Uno o más parámetros no son válidos.");
         pd.setProperty("errores", errores);
         return handleExceptionInternal(e, pd, headers, status, request);
+    }
+
+    // 400: falló la validación de métodos con @Validated
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ProblemDetail handleConstraintViolation(ConstraintViolationException e) {
+        List<String> errores = e.getConstraintViolations().stream()
+                .map(violacion -> violacion.getMessage())
+                .toList();
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST, "Uno o más parámetros no son válidos.");
+        pd.setProperty("errores", errores);
+        return pd;
     }
 
     // ---------- Red de seguridad ----------
