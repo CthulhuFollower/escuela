@@ -38,7 +38,7 @@ public interface HorarioRepository extends JpaRepository<Horario, Long> {
               and h.horaFin > :horaInicio
               and (:idExcluido is null or h.id <> :idExcluido)
             """)
-    boolean existeTraslxapePorAula(
+    boolean existeTraslapePorAula(
             @Param("idAula") Long idAula,
             @Param("periodo") String periodo,
             @Param("idGrupo") Long idGrupo,

@@ -56,10 +56,11 @@ public class Alumno {
 
     //cambioEnDatos
     public void asignarDatosAcademicos(String email, String matricula){
+        matricula = matricula == null ? null : matricula.trim();
         validarDatosAcademicos(email, matricula);
 
         this.email = email.toLowerCase().trim();
-        this.matricula = matricula.trim();
+        this.matricula = matricula;
     }
 
     public void actualizar(String nombre, String apellidoPaterno, String apellidoMaterno,

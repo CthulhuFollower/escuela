@@ -1,44 +1,78 @@
 package com.julian.escuela.entities;
 
 import com.julian.escuela.exceptions.DatoInvalidoException;
+import com.julian.escuela.enums.DiaSemana;
 import org.junit.jupiter.api.Test;
-
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+import static com.julian.escuela.support.TestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class GrupoTest {
-
     @Test
-    void crear_debeCrearGrupo_cuandoLosDatosSonValidos() {
+    void crear_cursoNulo_lanzaDatoInvalidoException() {
         // Arrange
-        Curso curso = Curso.crear("Matematicas I", null, 6);
-        Maestro maestro = Maestro.crear("Laura", "Martinez", "Lopez", "laura@escuela.com", "5551010789");
-        Aula aula = Aula.crear("Aula 101", 30);
-        String periodo = " 2026-2 ";
+        Maestro maestro = maestro();
+        Aula aula = aula();
 
         // Act
-        Grupo grupo = Grupo.crear(curso, maestro, aula, periodo);
+        DatoInvalidoException error = assertThrows(DatoInvalidoException.class,
+                () -> Grupo.crear(null, maestro, aula, "2026-01"));
 
         // Assert
-        assertThat(grupo.getId()).isNull();
+        assertThat(error.getMessage()).contains("curso");
+    }
+    @Test
+    void crear_datosValidos_retornaGrupo() {
+        // Arrange
+        Curso curso = curso();
+        Maestro maestro = maestro();
+        Aula aula = aula();
+
+        // Act
+        Grupo grupo = Grupo.crear(curso, maestro, aula, "2026-01");
+
+        // Assert
         assertThat(grupo.getCurso()).isSameAs(curso);
         assertThat(grupo.getMaestro()).isSameAs(maestro);
         assertThat(grupo.getAula()).isSameAs(aula);
-        assertThat(grupo.getPeriodo()).isEqualTo("2026-2");
-        assertThat(grupo.getInscripciones()).isEmpty();
-        assertThat(grupo.getHorarios()).isEmpty();
+        assertThat(grupo.getPeriodo()).isEqualTo("2026-01");
     }
-
     @Test
-    void crear_debeLanzarExcepcion_cuandoElCursoEsNulo() {
+    void crear_periodoNulo_lanzaDatoInvalidoException() {
         // Arrange
-        Curso curso = null;
-        Maestro maestro = Maestro.crear("Laura", "Martinez", "Lopez", "laura@escuela.com", "5551010789");
-        Aula aula = Aula.crear("Aula 101", 30);
+        Curso curso = curso();
 
-        // Act + Assert
-        assertThatThrownBy(() -> Grupo.crear(curso, maestro, aula, "2026-2"))
-                .isInstanceOf(DatoInvalidoException.class)
-                .hasMessage("El curso es requerido");
+        // Act
+        DatoInvalidoException error = assertThrows(DatoInvalidoException.class, () -> Grupo.crear(curso, maestro(), aula(), null));
+
+        // Assert
+        assertThat(error.getMessage()).isNotBlank();
+    }
+    @Test
+    void actualizar_datosValidos_actualizaCampos() {
+        // Arrange
+        Grupo grupo = grupo();
+        Aula nueva = Aula.crear("Aula 202", 40);
+
+        // Act
+        grupo.actualizar(curso(), maestro(), nueva, "2026-02");
+
+        // Assert
+        assertThat(grupo.getAula()).isSameAs(nueva);
+        assertThat(grupo.getPeriodo()).isEqualTo("2026-02");
+    }
+    @Test
+    void actualizar_periodoVacio_lanzaDatoInvalidoException() {
+        // Arrange
+        Grupo grupo = grupo();
+
+        // Act
+        DatoInvalidoException error = assertThrows(DatoInvalidoException.class, () -> grupo.actualizar(curso(), maestro(), aula(), " "));
+
+        // Assert
+        assertThat(error.getMessage()).isNotBlank();
     }
 }

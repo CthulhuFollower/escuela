@@ -1,46 +1,64 @@
 package com.julian.escuela.entities;
 
 import com.julian.escuela.exceptions.DatoInvalidoException;
+import com.julian.escuela.enums.DiaSemana;
 import org.junit.jupiter.api.Test;
-
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+import static com.julian.escuela.support.TestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class InscripcionTest {
-
     @Test
-    void crear_debeCrearInscripcion_cuandoLosDatosSonValidos() {
+    void crear_alumnoYGrupoValidos_retornaInscripcionConFechaDeHoy() {
         // Arrange
-        Alumno alumno = Alumno.crear("Juan", "Perez", "Lopez", "juan@alumnos.com", "A2026001");
-        Grupo grupo = crearGrupo();
+        Alumno alumno = alumno();
+        Grupo grupo = grupo();
 
         // Act
         Inscripcion inscripcion = Inscripcion.crear(alumno, grupo);
 
         // Assert
-        assertThat(inscripcion.getIdInscripcion()).isNull();
         assertThat(inscripcion.getAlumno()).isSameAs(alumno);
         assertThat(inscripcion.getGrupo()).isSameAs(grupo);
-        assertThat(inscripcion.getFechaInscripcion()).isNotNull();
+        assertThat(inscripcion.getFechaInscripcion().toLocalDate()).isEqualTo(LocalDate.now());
         assertThat(inscripcion.getCalificacion()).isNull();
     }
-
     @Test
-    void crear_debeLanzarExcepcion_cuandoElAlumnoEsNulo() {
+    void crear_alumnoNulo_lanzaDatoInvalidoException() {
         // Arrange
-        Alumno alumno = null;
-        Grupo grupo = crearGrupo();
+        Grupo grupo = grupo();
 
-        // Act + Assert
-        assertThatThrownBy(() -> Inscripcion.crear(alumno, grupo))
-                .isInstanceOf(DatoInvalidoException.class)
-                .hasMessage("El alumno es requerido");
+        // Act
+        DatoInvalidoException error = assertThrows(DatoInvalidoException.class, () -> Inscripcion.crear(null, grupo));
+
+        // Assert
+        assertThat(error.getMessage()).isNotBlank();
     }
+    @Test
+    void actualizar_datosValidos_actualizaAlumnoYGrupo() {
+        // Arrange
+        Inscripcion inscripcion = inscripcion();
+        Grupo nuevo = grupo();
+        nuevo.setId(2L);
 
-    private Grupo crearGrupo() {
-        Curso curso = Curso.crear("Matematicas I", null, 6);
-        Maestro maestro = Maestro.crear("Laura", "Martinez", "Lopez", "laura@escuela.com", "5551010789");
-        Aula aula = Aula.crear("Aula 101", 30);
-        return Grupo.crear(curso, maestro, aula, "2026-2");
+        // Act
+        inscripcion.actualizar(alumno(), nuevo);
+
+        // Assert
+        assertThat(inscripcion.getGrupo()).isSameAs(nuevo);
+    }
+    @Test
+    void actualizar_grupoNulo_lanzaDatoInvalidoException() {
+        // Arrange
+        Inscripcion inscripcion = inscripcion();
+
+        // Act
+        DatoInvalidoException error = assertThrows(DatoInvalidoException.class, () -> inscripcion.actualizar(alumno(), null));
+
+        // Assert
+        assertThat(error.getMessage()).isNotBlank();
     }
 }

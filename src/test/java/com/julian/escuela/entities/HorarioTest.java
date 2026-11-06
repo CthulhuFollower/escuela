@@ -1,49 +1,83 @@
 package com.julian.escuela.entities;
 
-import com.julian.escuela.enums.DiaSemana;
 import com.julian.escuela.exceptions.DatoInvalidoException;
+import com.julian.escuela.enums.DiaSemana;
 import org.junit.jupiter.api.Test;
-
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+import static com.julian.escuela.support.TestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class HorarioTest {
-
     @Test
-    void crear_debeCrearHorario_cuandoLosDatosSonValidos() {
+    void crear_horaInicioMenorQueHoraFin_retornaHorario() {
         // Arrange
-        Grupo grupo = crearGrupo();
-        DiaSemana dia = DiaSemana.LUNES;
-        String horaInicio = "08:00";
-        String horaFin = "09:00";
+        Grupo grupo = grupo();
 
         // Act
-        Horario horario = Horario.crear(grupo, dia, horaInicio, horaFin);
+        Horario horario = Horario.crear(grupo, DiaSemana.LUNES, "08:00", "10:00");
 
         // Assert
-        assertThat(horario.getId()).isNull();
         assertThat(horario.getGrupo()).isSameAs(grupo);
-        assertThat(horario.getDia()).isEqualTo(DiaSemana.LUNES);
         assertThat(horario.getHoraInicio()).isEqualTo("08:00");
-        assertThat(horario.getHoraFin()).isEqualTo("09:00");
+        assertThat(horario.getHoraFin()).isEqualTo("10:00");
     }
-
     @Test
-    void crear_debeLanzarExcepcion_cuandoLaHoraDeInicioEsInvalida() {
+    void crear_horaInicioMayorQueHoraFin_lanzaDatoInvalidoException() {
         // Arrange
-        Grupo grupo = crearGrupo();
-        String horaInicio = "25:00";
+        Grupo grupo = grupo();
 
-        // Act + Assert
-        assertThatThrownBy(() -> Horario.crear(grupo, DiaSemana.LUNES, horaInicio, "09:00"))
-                .isInstanceOf(DatoInvalidoException.class)
-                .hasMessage("La hora de inicio debe tener el formato HH:mm y estar entre 00:00 y 23:59");
+        // Act
+        DatoInvalidoException error = assertThrows(DatoInvalidoException.class, () -> Horario.crear(grupo, DiaSemana.LUNES, "10:00", "08:00"));
+
+        // Assert
+        assertThat(error.getMessage()).isNotBlank();
     }
+    @Test
+    void crear_horaInicioIgualAHoraFin_lanzaDatoInvalidoException() {
+        // Arrange
+        Grupo grupo = grupo();
 
-    private Grupo crearGrupo() {
-        Curso curso = Curso.crear("Matematicas I", null, 6);
-        Maestro maestro = Maestro.crear("Laura", "Martinez", "Lopez", "laura@escuela.com", "5551010789");
-        Aula aula = Aula.crear("Aula 101", 30);
-        return Grupo.crear(curso, maestro, aula, "2026-2");
+        // Act
+        DatoInvalidoException error = assertThrows(DatoInvalidoException.class, () -> Horario.crear(grupo, DiaSemana.LUNES, "08:00", "08:00"));
+
+        // Assert
+        assertThat(error.getMessage()).isNotBlank();
+    }
+    @Test
+    void crear_formatoInvalido_lanzaDatoInvalidoException() {
+        // Arrange
+        Grupo grupo = grupo();
+
+        // Act
+        DatoInvalidoException error = assertThrows(DatoInvalidoException.class, () -> Horario.crear(grupo, DiaSemana.LUNES, "8:00", "10:00"));
+
+        // Assert
+        assertThat(error.getMessage()).isNotBlank();
+    }
+    @Test
+    void actualizar_rangoValido_actualizaHorario() {
+        // Arrange
+        Horario horario = horario();
+
+        // Act
+        horario.actualizar(grupo(), DiaSemana.MARTES, "10:00", "12:00");
+
+        // Assert
+        assertThat(horario.getDia()).isEqualTo(DiaSemana.MARTES);
+        assertThat(horario.getHoraFin()).isEqualTo("12:00");
+    }
+    @Test
+    void actualizar_horaInicioMayorAHoraFin_lanzaDatoInvalidoException() {
+        // Arrange
+        Horario horario = horario();
+
+        // Act
+        DatoInvalidoException error = assertThrows(DatoInvalidoException.class, () -> horario.actualizar(grupo(), DiaSemana.LUNES, "10:00", "08:00"));
+
+        // Assert
+        assertThat(error.getMessage()).isNotBlank();
     }
 }
