@@ -21,7 +21,7 @@ class HorarioTest {
         Horario horario = Horario.crear(grupo, dia, horaInicio, horaFin);
 
         // Assert
-        assertThat(horario.getIdHorario()).isNull();
+        assertThat(horario.getId()).isNull();
         assertThat(horario.getGrupo()).isSameAs(grupo);
         assertThat(horario.getDia()).isEqualTo(DiaSemana.LUNES);
         assertThat(horario.getHoraInicio()).isEqualTo("08:00");

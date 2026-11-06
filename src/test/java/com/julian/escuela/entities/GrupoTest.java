@@ -20,7 +20,7 @@ class GrupoTest {
         Grupo grupo = Grupo.crear(curso, maestro, aula, periodo);
 
         // Assert
-        assertThat(grupo.getIdGrupo()).isNull();
+        assertThat(grupo.getId()).isNull();
         assertThat(grupo.getCurso()).isSameAs(curso);
         assertThat(grupo.getMaestro()).isSameAs(maestro);
         assertThat(grupo.getAula()).isSameAs(aula);

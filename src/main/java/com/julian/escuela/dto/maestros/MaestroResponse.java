@@ -7,6 +7,7 @@ import java.util.List;
 
 @Schema(description = "Informacion de un maestro")
 public record MaestroResponse(
+
         @Schema(description = "ID del maestro", example = "1")
         Long id,
 
